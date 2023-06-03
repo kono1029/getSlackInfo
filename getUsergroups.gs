@@ -22,6 +22,22 @@ function getUsergroups(cursor) {
       teamsArr.push([ teams_name, teams_id ]);
       } */
   
+    // ユーザー
+    url = USERS_LIST;
+    response = callApi(url, params);
+    members = JSON.parse(response).members;
+    
+    for (const member of members) {
+      let member_real_name = member.profile.real_name; // 氏名
+      let member_id = member.id; // ユーザーID
+      let deleted = member.deleted; // アカウントの状態の判定
+  
+      // アクティブなメンバーのみリストに追加する
+      if(!deleted){
+        usersArr.push([ member_real_name, member_id ]);
+      }
+    }
+  
     params.payload.cursor = cursor;
     url = USERGROUPS_LIST;
     response = callApi(url, params);
@@ -52,6 +68,18 @@ function getUsergroups(cursor) {
           }
         }
       }
+  
+      // created_byとmember_idを照合し、created_byをmember_real_nameに置き換える
+      for (let i = 0; i < groupsArr.length; i++) {
+        for (let j = 0; j < usersArr.length; j++) {
+          if (usersArr[j][1] === groupsArr[i][9]) {
+            groupsArr[i][9] = usersArr[j][0];
+            break;
+          }
+        }
+      }
+  
+  
     }
   
     /** スプレッドシートへの書き込み　*/
