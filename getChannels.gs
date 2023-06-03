@@ -67,8 +67,13 @@ function getChannels(cursor) {
       const lastMessage = messages[0];
       channel_messages_ts = formatTimestamp(lastMessage.ts * 1000);
   
+      // 最終更新日が3ヶ月以上前の場合のみ、チャンネル情報を格納する
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // 現在時刻から1日前の日時（ミリ秒）を取得
+      const threeMonthsAgo = new Date(Date.now() - 3 * 30 * 24 * 60 * 60 * 1000); // 現在時刻から3ヶ月前の日時（ミリ秒）を取得
+      const lastMessageDate = new Date(channel_messages_ts); // 最終更新日をDateオブジェクトに変換
+  
       // アクティブなチャンネル情報を格納する
-      if(!is_archived){
+      if((lastMessageDate < oneDayAgo) && !is_archived){
         channelsArr.push([ channel_team_id, channel_creator, channel_name, channel_created, channel_messages_ts, channel_num_members, is_private, is_ext_shared ]);
       }
   
