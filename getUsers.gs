@@ -46,6 +46,7 @@ function getUsers(cursor) {
         let primary_owner; // プライマリオーナー
         let owner; // ワークスペースオーナー
         let admin; // ワークスペース管理者
+        let type; // アカウント種別
         let status; // アカウントの状態
   
         if(is_primary_owner){
@@ -56,6 +57,14 @@ function getUsers(cursor) {
           admin = "管理者";
         }
   
+        if(is_restricted && is_ultra_restricted){
+          type = "シングルチャンネルゲスト";
+        }else if(is_restricted && !is_ultra_restricted){
+          type = "マルチチャンネルゲスト";
+        }else{
+          type = "メンバー";
+        }
+  
         if(is_invited_user){
           status = "招待中"
         }else{
@@ -63,8 +72,8 @@ function getUsers(cursor) {
         }
   
         // アクティブなメンバーのみリストに追加する
-        if(!is_ultra_restricted && !is_restricted && !deleted && !is_bot && !is_app_user){
-          usersArr.push([ member_email, member_name, member_real_name, member_id, member_team_id, primary_owner, owner, admin, status ]);
+        if(!deleted && !is_bot && !is_app_user){
+          usersArr.push([ member_email, member_name, member_real_name, member_id, member_team_id, type, primary_owner, owner, admin, status ]);
         }
   
         // member_team_idをteams_nameに置き換える
@@ -83,7 +92,7 @@ function getUsers(cursor) {
     sheet.clear();
   
     // 見出しの設定
-    sheet.appendRow([ 'メールアドレス', 'ユーザー名', '氏名', 'ユーザーID', 'ワークスペース', 'プライマリオーナー', 'オーナー', '管理者', 'アカウントの状態' ]);
+    sheet.appendRow([ 'メールアドレス', 'ユーザー名', '氏名', 'ユーザーID', 'ワークスペース', '種別' , 'プライマリオーナー', 'オーナー', '管理者', 'アカウントの状態' ]);
   
     // スプレッドシートに書き込み
     try{
