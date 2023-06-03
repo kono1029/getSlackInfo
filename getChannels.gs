@@ -1,6 +1,5 @@
 /** チャンネルの取得　*/
 function getChannels(cursor) {
-
     /** SlackAPI呼び出し */
     // ワークスペース
     url = TEAM_INFO;
