@@ -58,7 +58,7 @@ function getChannels(cursor) {
       let is_archived = channel.is_archived; // チャンネルの状態
   
       /** SlackAPI呼び出し */
-      // 最後にメッセージが投稿された日時（channel_messages_ts)を取得する
+      // メッセージが最後に投稿された日（channel_messages_ts)を取得する
       url = CONVERSATIONS_HISTORY;
       params.payload.channel = channel.id;  // チャンネルIDを指定
       params.payload.limit = 1;
@@ -67,10 +67,10 @@ function getChannels(cursor) {
       const lastMessage = messages[0];
       channel_messages_ts = formatTimestamp(lastMessage.ts * 1000);
   
-      // 最終更新日が3ヶ月以上前の場合のみ、チャンネル情報を格納する
+      // channel_messages_tsが3ヶ月以上前の場合のみ、チャンネル情報を格納する
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // 現在時刻から1日前の日時（ミリ秒）を取得
       const threeMonthsAgo = new Date(Date.now() - 3 * 30 * 24 * 60 * 60 * 1000); // 現在時刻から3ヶ月前の日時（ミリ秒）を取得
-      const lastMessageDate = new Date(channel_messages_ts); // 最終更新日をDateオブジェクトに変換
+      const lastMessageDate = new Date(channel_messages_ts); // channel_messages_tsをDateオブジェクトに変換
   
       // アクティブなチャンネル情報を格納する
       if((lastMessageDate < oneDayAgo) && !is_archived){
@@ -104,7 +104,7 @@ function getChannels(cursor) {
     sheet.clear();
   
     // 見出しの設定
-    sheet.appendRow([ 'ワークスペース', '作成者', 'チャンネル名', '作成日', '最終更新日', 'メンバー数', 'プライベートチャンネル', 'Slackコネクトチャンネル' ]);
+    sheet.appendRow([ 'ワークスペース', '作成者', 'チャンネル名', '作成日', 'メッセージが最後に投稿された日', 'メンバー数', 'プライベートチャンネル', 'Slackコネクトチャンネル' ]);
   
     // 書き込み
     try {
